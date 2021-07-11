@@ -1,0 +1,34 @@
+# 卸载旧版本docker
+yum -y  remove docker  docker-common docker-selinux docker-engine
+
+# 设置yum源
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum-config-manager  --add-repo  http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo #阿里云yum源
+
+# 查看所有仓库中所有docker版本，并选择特定版本安装
+yum list docker-ce --showduplicates | sort -r
+
+# 安装docker
+yum install -y docker-c
+yum install docker-ce-20.10.7
+
+# 启动docker并加入开机自动启动
+systemctl start docker
+systemctl enable docker
+
+# 配置阿里云镜像加速
+mkdir  -p  /etc/docker
+vi  /etc/docker/daemon.json
+# 添加以下内容
+{"registry-mirrors": 
+["https://5f2jam6c.mirror.aliyuncs.com", 
+"http://hub-mirror.c.163.com"]
+}
+
+# {"registry-mirrors":["https://docker.mirrors.ustc.edu.cn"]}
+
+# 重新加载配置文件
+systemctl reload  docker
+
+# 重启docker
+systemctl restart docker
